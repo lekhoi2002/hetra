@@ -1,0 +1,22 @@
+/* Tùy chỉnh cho gallery */
+.hextra-cards .gallery-item img {
+  transition: transform 0.3s ease;
+}
+
+.hextra-cards .gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+/* Tùy chỉnh GLightbox */
+.glightbox-clean .gslide-description {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.glightbox-clean .gslide-title {
+  color: #fff;
+  font-size: 1rem;
+}
+
+.glightbox-clean .gslide-desc {
+  color: #ddd;
+}

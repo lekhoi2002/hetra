@@ -1,0 +1,79 @@
+{{- $dir := .Get 0 -}}
+{{- $cols := 2 -}}
+{{- if gt (len .Params) 1 -}}
+  {{- $cols = index .Params 1 | int -}}
+{{- end -}}
+
+{{- /* Lưu ý: static/ được thêm vào trước img/ cho readDir, nhưng không cho URL */ -}}
+{{- $physicalPath := printf "static/img/%s" $dir -}}
+{{- $urlPath := printf "img/%s" $dir -}}
+{{- $files := readDir $physicalPath -}}
+{{- $captionMap := dict -}}
+
+{{- /* Đọc file album.txt nếu tồn tại */ -}}
+{{- $albumPath := printf "%s/album.txt" $physicalPath -}}
+{{- if fileExists $albumPath -}}
+  {{- $albumContent := readFile $albumPath -}}
+  {{- $lines := split $albumContent "\n" -}}
+  {{- range $index, $line := $lines -}}
+    {{- if ne (trim $line " ") "" -}}
+      {{- $parts := split $line "|" -}}
+      {{- if ge (len $parts) 2 -}}
+        {{- $filename := index $parts 0 | trim -}}
+        {{- $caption := index $parts 1 | trim -}}
+        {{- $captionMap = merge $captionMap (dict $filename $caption) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+<!-- Đánh dấu trang này có sử dụng gallery -->
+{{ .Page.Scratch.Set "has_gallery" true }}
+
+<div class="hextra-cards hx-mt-6 hx-gap-4 hx-grid not-prose" style="--hextra-cards-grid-cols: {{ $cols }};">
+  {{- range $files -}}
+    {{- $ext := path.Ext .Name | lower -}}
+    {{- if in (slice ".jpg" ".jpeg" ".png" ".webp" ".gif") $ext -}}
+      {{- $filename := path.Base .Name -}}
+      {{- $imgPath := printf "%s/%s" $urlPath .Name -}}
+      {{- $caption := "" -}}
+      
+      {{- /* Ưu tiên 1: Tìm trong album.txt */ -}}
+      {{- range $key, $value := $captionMap -}}
+        {{- if eq $key $filename -}}
+          {{- $caption = $value -}}
+        {{- end -}}
+      {{- end -}}
+      
+      {{- /* Ưu tiên 2: Thông tin EXIF (Hugo không hỗ trợ đọc EXIF trực tiếp) */ -}}
+      {{- if eq $caption "" -}}
+        {{- with (imageConfig (printf "%s/%s" $physicalPath .Name)) -}}
+          {{- /* Đây là nơi sẽ đọc EXIF nếu Hugo hỗ trợ */ -}}
+        {{- end -}}
+      {{- end -}}
+      
+      {{- /* Ưu tiên 3: Tên file */ -}}
+      {{- if eq $caption "" -}}
+        {{- $caption = replace $filename $ext "" -}}
+      {{- end -}}
+      
+      <div class="hextra-card hx-rounded-lg hx-border hx-border-gray-200 hx-bg-transparent hx-transition-colors hover:hx-bg-gray-100/50 dark:hx-border-neutral-800 dark:hover:hx-bg-neutral-800/50 hx-overflow-hidden">
+        <a href="{{ $imgPath | absURL }}"
+           class="gallery-item"
+           data-gallery="gallery-{{ $dir }}"
+           data-glightbox="title: {{ $caption }}">
+          <div class="hx-w-full hx-relative">
+            <img 
+              src="{{ $imgPath | absURL }}" 
+              alt=""
+              loading="lazy" 
+              decoding="async" 
+              class="hx-w-full hx-object-cover" 
+              style="aspect-ratio: 4/3;"
+            />
+          </div>
+        </a>
+      </div>
+    {{- end -}}
+  {{- end -}}
+</div>

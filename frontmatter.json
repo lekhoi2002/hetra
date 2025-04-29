@@ -1,0 +1,83 @@
+{
+  "$schema": "https://frontmatter.codes/frontmatter.schema.json",
+  "frontMatter.taxonomy.contentTypes": [
+    {
+      "name": "default", // Hoặc tên content type cụ thể như 'blog', 'post'
+      "pageBundle": false,
+      "previewPath": null,
+      "fields": [
+        {
+          "title": "Title",
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "title": "Description",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "title": "Publishing date",
+          "name": "date",
+          "type": "datetime",
+          "default": "{{now}}",
+          "isPublishDate": true
+        },
+        // --- Thêm hoặc sửa các trường ảnh ---
+        {
+          "title": "Thumbnail (for list views)",
+          "name": "thumbnail",
+          "type": "image", // Sử dụng kiểu 'image' của Front Matter CMS
+          "description": "Relative path from the 'assets' folder (e.g., images/thumbnails/my-thumb.jpg)"
+        },
+        {
+          "title": "Main Image (optional, for single view)",
+          "name": "image",
+          "type": "image",
+          "description": "Relative path from the 'assets' folder (e.g., images/posts/my-image.webp)"
+        },
+         {
+          "title": "Cover Image (alternative)",
+          "name": "cover",
+          "type": "image",
+          "description": "Relative path from the 'assets' folder (e.g., images/covers/my-cover.png)"
+        },
+        {
+          "title": "Open Graph Images (for social sharing)",
+          "name": "images",
+          "type": "list", // Kiểu 'list' cho mảng
+          "items": { // Định nghĩa kiểu của item trong list
+            "type": "image" // Mỗi item là một đường dẫn ảnh
+          },
+          "description": "List of relative paths from 'assets' folder. First image is used for Open Graph. (e.g., [\"images/og/og-image.png\"])"
+        },
+        {
+          "title": "Is in draft",
+          "name": "draft",
+          "type": "draft"
+        },
+        {
+          "title": "Tags",
+          "name": "tags",
+          "type": "tags"
+        },
+        {
+          "title": "Categories",
+          "name": "categories",
+          "type": "categories"
+        }
+      ]
+    }
+    // ... (Thêm các content types khác nếu cần)
+  ],
+  "frontMatter.framework.id": "hugo",
+  // --- Đảm bảo publicFolder trỏ đúng vào assets ---
+  "frontMatter.content.publicFolder": "assets",
+  "frontMatter.preview.host": "http://localhost:1313",
+  "frontMatter.content.pageFolders": [
+    {
+      "title": "content",
+      "path": "[[workspace]]/content"
+    }
+  ]
+}

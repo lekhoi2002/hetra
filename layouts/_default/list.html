@@ -1,0 +1,71 @@
+{{/* layouts/_default/list.html */}}
+{{ define "main" }}
+  {{- $readMore := (T "readMore") | default "Read more →" -}}
+  <div class="hx-mx-auto hx-flex {{ partial `utils/page-width` . }}">
+    <article class="hx-w-full hx-break-words hx-flex hx-min-h-[calc(100vh-var(--navbar-height))] hx-min-w-0 hx-justify-center hx-pb-8">
+      <main class="hx-w-full hx-min-w-0 hx-max-w-6xl hx-px-6 hx-pt-4 md:hx-px-12">
+        {{ if .Title }}
+          <h1 class="hx-text-center hx-mt-2 hx-text-4xl hx-font-bold hx-tracking-tight hx-text-slate-900 dark:hx-text-slate-100">{{ .Title }}</h1>
+        {{ end }}
+
+        {{- with .Content -}}
+          <div class="content">{{ . }}</div>
+        {{- end -}}
+
+        {{- $pages := partial "utils/sort-pages" (dict "page" . "by" site.Params.blog.list.sortBy "order" site.Params.blog.list.sortOrder) -}}
+
+        <div class="hextra-cards hx-mt-6 hx-gap-4 hx-grid not-prose" style="--hextra-cards-grid-cols: 3;">
+          {{- range $pages }}
+            {{- $page := . -}}
+            {{- $title := partial "utils/title" $page -}}
+            {{- $permalink := $page.RelPermalink -}}
+
+            {{/* Lấy đường dẫn ảnh từ trường 'image' duy nhất */}}
+            {{- $imagePath := $page.Params.image -}}
+
+            {{/* Lấy và xử lý ảnh thành thumbnail */}}
+            {{- $imageRes := "" -}}
+            {{- $thumb := "" -}}
+            {{- if $imagePath -}}
+              {{- $imageRes = resources.Get $imagePath -}}
+              {{- if $imageRes -}}
+                {{/* --- Quy tắc xử lý THUMBNAIL --- */}}
+                {{- $thumb = $imageRes.Fill "400x300 webp q70" -}} {{/* Ví dụ: Crop và resize thành 400x300 */}}
+              {{- else -}}
+                {{- warnf "Thumbnail Image asset not found for page %q: %s" $page.Path $imagePath -}}
+              {{- end -}}
+            {{- end -}}
+
+            {{/* Xác định lớp CSS cho card */}}
+            {{- $linkClass := "hover:hx-border-gray-300 hx-bg-transparent hx-shadow-sm dark:hx-border-neutral-800 hover:hx-bg-slate-50 hover:hx-shadow-md dark:hover:hx-border-neutral-700 dark:hover:hx-bg-neutral-900" -}}
+            {{- if $thumb -}}
+              {{- $linkClass = "hover:hx-border-gray-300 hx-bg-gray-100 hx-shadow dark:hx-border-neutral-700 dark:hx-bg-neutral-800 dark:hx-text-gray-50 hover:hx-shadow-lg dark:hover:hx-border-neutral-500 dark:hover:hx-bg-neutral-700" -}}
+            {{- end -}}
+
+            <a
+              href="{{ $permalink }}"
+              class="hextra-card hx-group hx-flex hx-flex-col hx-justify-start hx-overflow-hidden hx-rounded-lg hx-border hx-border-gray-200 hx-text-current hx-no-underline dark:hx-border-neutral-800 dark:hx-shadow-none hover:hx-shadow-gray-100 dark:hover:hx-shadow-none hx-shadow-gray-100 active:hx-shadow-sm active:hx-shadow-gray-200 hx-transition-all hx-duration-200 {{ $linkClass }}"
+            >
+              {{- if $thumb -}}
+                <img
+                  alt="{{ $title }}"
+                  class="hextra-card-image"
+                  loading="lazy"
+                  decoding="async"
+                  src="{{ $thumb.RelPermalink }}"
+                  width="{{ $thumb.Width }}"
+                  height="{{ $thumb.Height }}"
+                  style="object-fit:cover; aspect-ratio:4/3;" {{/* Hoặc 16/9 tùy bạn muốn */}}
+                />
+              {{- end -}}
+
+              <span class="hextra-card-icon hx-flex hx-font-semibold hx-items-start hx-gap-2 hx-p-4 hx-text-gray-700 hover:hx-text-gray-900 dark:hx-text-neutral-200 dark:hover:hx-text-neutral-50">
+                {{ $title }}
+              </span>
+            </a>
+          {{- end -}}
+        </div>
+      </main>
+    </article>
+  </div>
+{{- end -}}

@@ -1,0 +1,12 @@
+
+name = "Hextra"
+license = "MIT"
+licenselink = "https://github.com/"
+description = "Modern, responsive for creating beautiful static websites."
+
+features = ["Responsive", "Dark Mode"]
+min_version = "0.134.0"
+
+[author]
+  name = "Khoi Le"
+  homepage = "/"

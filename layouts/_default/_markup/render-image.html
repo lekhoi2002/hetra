@@ -1,0 +1,55 @@
+{{/* layouts/_default/_markup/render-image.html */}}
+{{- $alt := .PlainText | safeHTML -}}
+{{- $lazyLoading := .Page.Site.Params.enableImageLazyLoading | default true -}}
+{{- $dest := .Destination -}}
+{{- $title := .Title -}}
+
+{{- $isLocal := not (urls.Parse $dest).Scheme -}}
+{{- $isExternal := not $isLocal -}}
+
+{{- $imgRes := "" -}} {{/* Khởi tạo biến tài nguyên ảnh */}}
+{{- $width := "" -}}
+{{- $height := "" -}}
+{{- $src := $dest -}} {{/* Mặc định src là đường dẫn gốc */}}
+{{- $link := $dest -}} {{/* Mặc định link lightbox là ảnh gốc */}}
+
+{{- if $isLocal -}}
+  {{/* Cố gắng lấy ảnh từ assets */}}
+  {{- $imgRes = resources.Get $dest -}}
+  {{- if $imgRes -}}
+    {{/* --- Ảnh cục bộ trong assets -> Xử lý bằng Hugo Pipes --- */}}
+    {{/* --- Thay đổi quy tắc xử lý ảnh ở đây nếu cần --- */}}
+    {{- $processedImg := $imgRes.Resize "1024x webp q85" -}} {{/* Resize và chuyển sang webp */}}
+    {{- $src = $processedImg.RelPermalink -}}
+    {{- $width = $processedImg.Width -}}
+    {{- $height = $processedImg.Height -}}
+    {{- $link = $imgRes.RelPermalink -}} {{/* Link lightbox vẫn là ảnh gốc chưa resize */}}
+    {{- .Page.Scratch.Set "has_gallery" true -}} {{/* Đánh dấu trang có ảnh để load GLightbox */}}
+  {{- else -}}
+    {{/* --- Ảnh cục bộ không tìm thấy trong assets -> Sử dụng đường dẫn gốc và cảnh báo --- */}}
+    {{- warnf "Image asset not found: %s in page %s. Using original path." $dest .Page.Path -}}
+    {{- $src = $dest | relURL -}}
+    {{- $link = $src -}}
+  {{- end -}}
+{{- else -}}
+  {{/* --- Ảnh bên ngoài -> Giữ nguyên không xử lý --- */}}
+  {{- $src = $dest -}}
+  {{- $link = $dest -}}
+{{- end -}}
+
+{{/* Bọc ảnh bằng GLightbox nếu là ảnh cục bộ VÀ được tìm thấy trong assets */}}
+{{- if and $isLocal $imgRes -}}
+  <a href="{{ $link | safeURL }}" class="glightbox gallery-item" data-gallery="content-gallery" {{ with $title }}data-glightbox="title: {{ . | safeHTMLAttr }}"{{ end }}>
+    <img src="{{ $src | safeURL }}" alt="{{ $alt }}"
+         {{ with $title }}title="{{ . | safeHTMLAttr }}"{{ end }}
+         {{ if $width }}width="{{ $width }}"{{ end }}
+         {{ if $height }}height="{{ $height }}"{{ end }}
+         {{ if $lazyLoading }}loading="lazy" decoding="async"{{ end }}>
+  </a>
+{{- else -}}
+  {{/* Ảnh ngoài hoặc không tìm thấy trong assets thì không dùng GLightbox */}}
+  <img src="{{ $src | safeURL }}" alt="{{ $alt }}"
+       {{ with $title }}title="{{ . | safeHTMLAttr }}"{{ end }}
+       {{/* Không thêm width/height cho ảnh ngoài hoặc không tìm thấy */}}
+       {{ if $lazyLoading }}loading="lazy" decoding="async"{{ end }}>
+{{- end -}}

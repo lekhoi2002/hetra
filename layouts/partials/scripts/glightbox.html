@@ -1,0 +1,15 @@
+{{/* GLightbox */}}
+{{- $glightboxCSS := resources.Get "lib/glightbox/glightbox.min.css" | fingerprint -}}
+{{- $glightboxJS := resources.Get "lib/glightbox/glightbox.min.js" | fingerprint -}}
+<link type="text/css" rel="stylesheet" href="{{ $glightboxCSS.RelPermalink }}" integrity="{{ $glightboxCSS.Data.Integrity }}" />
+<script defer src="{{ $glightboxJS.RelPermalink }}" integrity="{{ $glightboxJS.Data.Integrity }}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const lightbox = GLightbox({
+      selector: '.gallery-item',
+      touchNavigation: true,
+      loop: true,
+      autoplayVideos: true
+    });
+  });
+</script>
