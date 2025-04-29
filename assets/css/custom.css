@@ -1,4 +1,39 @@
-/* Tùy chỉnh cho gallery */
+/* --- Tùy chỉnh cho Meta Box và Buttons --- */
+
+/* Container chứa các nút */
+.meta-buttons-external {
+  display: flex;
+  padding: 0; /* Bỏ padding cũ nếu không cần */
+  gap: 0.75rem;  /* Gap 12px (Tailwind gap-3) */
+}
+
+/* Các nút bên trong container */
+.meta-buttons-external > .hx-btn {
+  flex-grow: 1;      /* Chia sẻ không gian đồng đều */
+  flex-basis: 0;     /* Đảm bảo flex-grow hoạt động */
+  text-align: center;
+}
+
+/* Class chung cho nút (ví dụ) */
+.hx-btn {
+  @apply hx-inline-flex hx-items-center hx-justify-center hx-px-4 hx-py-2 hx-text-sm hx-font-semibold hx-rounded-md hx-transition-colors focus:hx-outline-none focus:hx-ring-2 focus:hx-ring-offset-2;
+}
+.hx-btn-primary {
+  @apply hx-bg-primary-600 hx-text-white hover:hx-bg-primary-700 focus:hx-ring-primary-500 dark:hx-bg-primary-600 dark:hover:hx-bg-primary-700 dark:focus:hx-ring-primary-800;
+}
+
+/* Nền xen kẽ cho meta items (dùng class Tailwind thay vì nth-child) */
+/* Việc thêm class vào template dễ quản lý hơn */
+/* .meta-box .meta-items-list .meta-item { */
+  /* @apply hx-py-2 hx-px-3 hx-rounded; */ /* Đã thêm vào template */
+/* } */
+/* .meta-box .meta-items-list .meta-item:nth-child(odd) { */
+  /* @apply hx-bg-primary-100/10 dark:hx-bg-primary-900/10; */ /* Đã thêm vào template */
+/* } */
+
+/* --- Kết thúc tùy chỉnh --- */
+
+/* Các CSS tùy chỉnh khác của bạn (gallery, glightbox) giữ nguyên */
 .hextra-cards .gallery-item img {
   transition: transform 0.3s ease;
 }
@@ -7,7 +42,6 @@
   transform: scale(1.05);
 }
 
-/* Tùy chỉnh GLightbox */
 .glightbox-clean .gslide-description {
   background: rgba(0, 0, 0, 0.7);
 }
@@ -20,3 +54,4 @@
 .glightbox-clean .gslide-desc {
   color: #ddd;
 }
+

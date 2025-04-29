@@ -1,0 +1,84 @@
+{{ define "main" }}
+  <div class="hx-mx-auto hx-flex {{ partial `utils/page-width` . }}">
+    {{/* Xóa hoặc comment dòng partial toc.html dưới đây */}}
+    {{/* partial "toc.html" . */}}
+
+    <article class="hx-w-full hx-break-words hx-flex hx-min-h-[calc(100vh-var(--navbar-height))] hx-min-w-0 hx-justify-center hx-pb-8 hx-pr-[calc(env(safe-area-inset-right)-1.5rem)]">
+      <main class="hx-w-full hx-min-w-0 hx-max-w-6xl hx-px-6 hx-pt-4 md:hx-px-12">
+        {{ partial "breadcrumb.html" . }}
+        {{ if .Title }}<h1 class="hx-mt-2 hx-text-4xl hx-font-bold hx-tracking-tight hx-text-slate-900 dark:hx-text-slate-100">{{ .Title }}</h1>{{ end }}
+
+        {{/* Header phụ (Ngày đăng, tác giả - giữ lại từ Hextra nếu muốn) */}}
+        <div class="hx-mt-4 hx-mb-8 hx-text-gray-500 hx-text-sm hx-flex hx-items-center hx-flex-wrap hx-gap-y-2">
+          {{- with $date := .Date }}<span class="hx-mr-1">{{ partial "utils/format-date" $date }}</span>{{ end -}}
+          {{/* ... (code tác giả nếu có) ... */}}
+        </div>
+
+        {{/* --- Layout 2 cột --- */}}
+        <div class="hx-grid md:hx-grid-cols-12 hx-gap-8 hx-mb-8">
+          {{/* Cột trái: Ảnh */}}
+          <div class="md:hx-col-span-7">
+            {{ with .Params.thumbnail }}
+              {{ $imageRes := "" }}
+              {{ $src := . }}
+              {{ if not (urls.Parse $src).Scheme }}
+                {{ $imageRes = resources.Get $src }}
+              {{ end }}
+
+              {{ if $imageRes }}
+                {{ $processedImg := $imageRes.Fill "800x webp q85" }} {{/* Giữ nguyên resize */}}
+                <img src="{{ $processedImg.RelPermalink }}"
+                     width="{{ $processedImg.Width }}"
+                     height="{{ $processedImg.Height }}"
+                     class="hx-w-full hx-rounded-lg hx-shadow-md"
+                     loading="lazy"
+                     alt="{{ with $.Params.image_alt }}{{ . }}{{ else }}{{ printf "%s - Ảnh đại diện" $.Title }}{{ end }}">
+              {{ else }}
+                <div class="hx-bg-gray-100 dark:hx-bg-neutral-800 hx-border dark:hx-border-neutral-700 hx-rounded-lg hx-flex hx-items-center hx-justify-center hx-text-gray-500 dark:hx-text-gray-400" style="min-height: 300px; aspect-ratio: 4/3;">
+                  <span>Không có ảnh đại diện</span>
+                </div>
+              {{ end }}
+            {{ else }}
+              <div class="hx-bg-gray-100 dark:hx-bg-neutral-800 hx-border dark:hx-border-neutral-700 hx-rounded-lg hx-flex hx-items-center hx-justify-center hx-text-gray-500 dark:hx-text-gray-400" style="min-height: 300px; aspect-ratio: 4/3;">
+                <span>Không có ảnh đại diện</span>
+              </div>
+            {{ end }}
+          </div>
+
+          {{/* Cột phải: Meta box và Buttons */}}
+          <div class="md:hx-col-span-5">
+            {{ partial "components/meta-box.html" . }}
+
+            {{/* Buttons */}}
+            <div class="meta-buttons-external hx-mt-4">
+              <a href="tel:0972612669" class="hx-btn hx-btn-primary hx-shadow-sm" role="button">
+                {{ partial "utils/icon.html" (dict "name" "calculator" "attributes" "height=1em class='hx-inline-block hx-mr-1'") }} Nhận Báo Giá
+              </a>
+              <a href="tel:0972612669" class="hx-btn hx-btn-primary hx-shadow-sm" role="button">
+                {{ partial "utils/icon.html" (dict "name" "phone" "attributes" "height=1em class='hx-inline-block hx-mr-1'") }} 0972612669
+              </a>
+            </div>
+          </div>
+        </div>
+        {{/* --- Kết thúc Layout 2 cột --- */}}
+
+        <hr class="hx-my-8 hx-border-t dark:hx-border-neutral-800"/>
+
+        {{/* Nội dung chính */}}
+        <div class="content">
+          {{ .Content }}
+        </div>
+
+        {{/* Bài viết liên quan */}}
+        {{ partial "components/related-posts.html" . }}
+
+        {{ partial "components/last-updated.html" . }}
+        {{ if (site.Params.blog.article.displayPagination | default true) -}}
+          {{- .Scratch.Set "reversePagination" true -}}
+          {{- partial "components/pager.html" . -}}
+        {{ end }}
+        {{ partial "components/comments.html" . }}
+      </main>
+    </article>
+  </div>
+{{ end }}

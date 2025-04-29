@@ -1,0 +1,66 @@
+{{/* Path: layouts/partials/components/meta-box.html */}}
+{{ $page := . }}
+{{ $currentSection := $page.Section }}
+{{ $currentType := $page.Type }}
+
+{{ $isNoiThat := or (eq $currentSection "noi-that") (eq $currentType "noi-that") }}
+{{ $isDuAn := or (eq $currentSection "du-an") (eq $currentType "du-an") }}
+
+{{ $hasParams := false }}
+{{ $metaFields := slice }}
+{{ $boxTitle := "" }}
+{{ $boxIcon := "information-circle" }}
+{{ $labelMinWidth := "hx-min-w-[100px]" }}
+
+{{ if $isNoiThat }}
+    {{ $boxTitle = "Thông số kỹ thuật" }}
+    {{ $boxIcon = "information-circle" }}
+    {{ $metaFields = slice
+        (dict "key" "ma_san_pham" "label" "Mã SP" "icon" "tag")
+        (dict "key" "chat_lieu" "label" "Chất liệu" "icon" "cube")
+        (dict "key" "mau_sac" "label" "Màu sắc" "icon" "color-swatch")
+        (dict "key" "kich_thuoc" "label" "Kích thước" "icon" "scale")
+        (dict "key" "xuat_xu" "label" "Xuất xứ" "icon" "location-marker")
+        (dict "key" "bao_hanh" "label" "Bảo hành" "icon" "shield-check")
+        (dict "key" "thuong_hieu" "label" "Thương hiệu" "icon" "bookmark")
+        (dict "key" "gia_ban" "label" "Giá" "icon" "currency-dollar" "valueClass" "hx-font-bold hx-text-red-600 dark:hx-text-red-400 hx-text-lg")
+    }}
+    {{ range $metaFields }}{{ if isset $page.Params .key }}{{ $hasParams = true }}{{ break }}{{ end }}{{ end }} {{/* break khi tìm thấy param */}}
+{{ else if $isDuAn }}
+    {{ $boxTitle = "Thông Tin Dự Án" }}
+    {{ $boxIcon = "clipboard-list" }}
+    {{ $labelMinWidth = "hx-min-w-[140px]" }}
+    {{ $metaFields = slice
+        (dict "key" "chu_dau_tu" "label" "Chủ đầu tư" "icon" "user-circle")
+        (dict "key" "dia_chi_thi_cong" "label" "Địa chỉ thi công" "icon" "location-marker")
+        (dict "key" "loai_hinh" "label" "Loại hình" "icon" "office-building")
+        (dict "key" "phong_cach" "label" "Phong cách" "icon" "pencil-alt")
+        (dict "key" "vat_lieu_chinh" "label" "Vật liệu chính" "icon" "cube-transparent")
+        (dict "key" "don_vi" "label" "Đơn vị" "icon" "identification")
+        (dict "key" "tong_dien_tich_xd" "label" "Tổng diện tích XD" "icon" "scale")
+        (dict "key" "nam_thuc_hien" "label" "Năm thực hiện" "icon" "calendar")
+    }}
+    {{ range $metaFields }}{{ if isset $page.Params .key }}{{ $hasParams = true }}{{ break }}{{ end }}{{ end }} {{/* break khi tìm thấy param */}}
+{{ end }}
+
+{{ if $hasParams }}
+<div class="meta-box hx-p-4 hx-border hx-rounded-lg hx-shadow-sm dark:hx-border-neutral-700 dark:hx-bg-neutral-800/50">
+    <h4 class="meta-box-title hx-mb-3 hx-pb-2 hx-border-b dark:hx-border-neutral-700 hx-font-semibold hx-text-lg hx-flex hx-items-center">
+        {{ partial "utils/icon.html" (dict "name" $boxIcon "attributes" "height=1em class='hx-inline-block hx-mr-2 hx-text-primary-600'") }}
+        {{ $boxTitle }}
+    </h4>
+    <div class="meta-items-list hx-space-y-1">
+        {{ range $index, $field := $metaFields }}
+            {{ with $page.Param $field.key }}
+            <div class="meta-item hx-flex hx-items-center hx-py-2 hx-px-3 {{ if modBool $index 2 }}hx-bg-primary-100/10 dark:hx-bg-primary-900/10{{ end }} hx-rounded">
+                <strong class="meta-label hx-mr-2 hx-font-semibold hx-text-gray-600 dark:hx-text-gray-400 hx-flex hx-items-center {{ $labelMinWidth }}">
+                    {{ partial "utils/icon.html" (dict "name" $field.icon "attributes" "height=1em class='hx-inline-block hx-mr-1.5 hx-text-gray-400 dark:hx-text-gray-500'") }}
+                    {{ $field.label }}:
+                </strong>
+                <span class="meta-value hx-text-primary-700 dark:hx-text-primary-300 {{ $field.valueClass | default "" }}">{{ . }}</span>
+            </div>
+            {{ end }}
+        {{ end }}
+    </div>
+</div>
+{{ end }}

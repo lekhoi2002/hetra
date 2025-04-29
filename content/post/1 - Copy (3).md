@@ -1,7 +1,8 @@
 ---
 author: Khôi Lê
-title: Thiền Tại Việt Nam
+title: Bài viết chuẩn
 date: 2024-11-29T08:29:23.264Z
+image: images/mau/giuong-go-oc-cho-gg19-11.webp
 ---
 # **2.5. Thiền Tại Việt Nam**  
 
@@ -29,11 +30,11 @@ Thiền bắt đầu du nhập vào Việt Nam cùng với Phật giáo từ th�
    - Tư tưởng: **"Phật tại tâm" – Tìm kiếm sự giác ngộ trong chính mình, không xa rời cuộc sống thực tế.**
 
 ---
-![](/images/card-image-unprocessed.jpg)
-
-Ảnh lấy thư mục access
 ![](/images/mau/giuong-go-oc-cho-gg19-11.webp)
 ![](/images/mau/giuong-go-oc-cho-gg19-7.webp)
+![](/images/mau/giuong-go-oc-cho-gg19-8.webp)
+![](/images/mau/giuong-go-oc-cho-gg19-8.webp)
+![](/images/mau/giuong-go-oc-cho-gg19-9.webp)
 
 
 ## **. Thiền Trong Đời Sống Hiện Đại Tại Việt Nam**  

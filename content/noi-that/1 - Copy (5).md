@@ -1,8 +1,8 @@
 ---
 author: Khôi Lê
-title: Thiền Tại Việt Nam
+title: Bài viết chuẩn
 date: 2024-11-29T08:29:23.264Z
-preview: /images/mau/giuong-go-oc-cho-gg19-10.webp
+image: images/mau/giuong-go-oc-cho-gg19-11.webp
 ---
 # **2.5. Thiền Tại Việt Nam**  
 
