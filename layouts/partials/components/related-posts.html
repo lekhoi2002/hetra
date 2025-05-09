@@ -29,14 +29,15 @@
 {{ if $relatedPosts }}
 <div class="related-posts-section hx-mt-12 hx-pt-8 hx-border-t dark:hx-border-neutral-800">
   <h3 class="hx-mb-6 hx-text-center hx-text-2xl hx-font-semibold">Sản phẩm liên quan</h3>
-  {{/* Sử dụng cấu trúc giống shortcode 'cards' của Hextra */}}
   <div class="hextra-cards hx-mt-4 hx-gap-4 hx-grid not-prose" style="--hextra-cards-grid-cols: 3;">
     {{ range $relatedPosts }}
       {{- $page := . -}}
       {{- $link := $page.RelPermalink -}}
       {{- $title := partial "utils/title" $page -}}
       {{- $subtitle := $page.Description | default ($page.Summary | plainify | truncate 100) -}}
-      {{- $imagePath := $page.Params.thumbnail -}}
+
+      {{/* MODIFIED: Logic lấy và xử lý ảnh */}}
+      {{- $imagePath := $page.Params.image -}}
       {{- $imageRes := "" -}}
       {{- $thumb := "" -}}
       {{- $width := 0 -}}
@@ -46,7 +47,7 @@
       {{- if $imagePath -}}
         {{- $imageRes = resources.Get $imagePath -}}
         {{- if $imageRes -}}
-          {{- $thumb = $imageRes.Fill "400x300 webp q70" -}}
+          {{- $thumb = $imageRes.Fill "400x300 webp q95" -}}
           {{- $imageSrc = $thumb.RelPermalink -}}
           {{- $width = $thumb.Width -}}
           {{- $height = $thumb.Height -}}
@@ -54,8 +55,8 @@
           {{- warnf "Related Posts Thumbnail: Image resource not found for '%s' in page '%s'." $imagePath $page.File.Path -}}
         {{- end -}}
       {{- end -}}
+      {{/* END MODIFIED */}}
 
-      {{/* Gọi partial card của Hextra */}}
       {{ partial "shortcodes/card.html" (dict
         "page" $page
         "link" $link
@@ -65,11 +66,7 @@
         "width" $width
         "height" $height
         "imageStyle" "object-fit:cover; aspect-ratio:4/3;"
-      ) }} {{/* <- Chú thích có thể đặt ở đây */}}
-      {{/* Hoặc đặt chú thích trên các dòng riêng biệt bên ngoài partial call */}}
-      {{/* Thêm subtitle nếu muốn */}}
-      {{/* Truyền ảnh đã xử lý */}}
-      {{/* Đảm bảo ảnh phù hợp */}}
+      ) }}
     {{ end }}
   </div>
 </div>

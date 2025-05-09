@@ -1,3 +1,4 @@
+{{/* Path: layouts/noi-that/single.html */}}
 {{ define "main" }}
   <div class="hx-mx-auto hx-flex {{ partial `utils/page-width` . }}">
     {{/* Xóa hoặc comment dòng partial toc.html dưới đây */}}
@@ -18,24 +19,24 @@
         <div class="hx-grid md:hx-grid-cols-12 hx-gap-8 hx-mb-8">
           {{/* Cột trái: Ảnh */}}
           <div class="md:hx-col-span-7">
-            {{ with .Params.thumbnail }}
-              {{ $imageRes := "" }}
-              {{ $src := . }}
-              {{ if not (urls.Parse $src).Scheme }}
-                {{ $imageRes = resources.Get $src }}
-              {{ end }}
+            {{/* MODIFIED: Logic lấy và xử lý ảnh chính */}}
+            {{ $imagePath := .Params.image }}
+            {{ $altText := printf "%s - Ảnh chính" .Title }} {{/* Default alt text */}}
+            {{ with .Params.image_alt }} {{ $altText = . }} {{ end }} {{/* Override if image_alt exists */}}
 
+            {{ if $imagePath }}
+              {{ $imageRes := resources.Get $imagePath }}
               {{ if $imageRes }}
-                {{ $processedImg := $imageRes.Fill "800x webp q85" }} {{/* Giữ nguyên resize */}}
+                {{ $processedImg := $imageRes.Resize "800x webp q95" }}
                 <img src="{{ $processedImg.RelPermalink }}"
                      width="{{ $processedImg.Width }}"
                      height="{{ $processedImg.Height }}"
                      class="hx-w-full hx-rounded-lg hx-shadow-md"
                      loading="lazy"
-                     alt="{{ with $.Params.image_alt }}{{ . }}{{ else }}{{ printf "%s - Ảnh đại diện" $.Title }}{{ end }}">
+                     alt="{{ $altText }}">
               {{ else }}
                 <div class="hx-bg-gray-100 dark:hx-bg-neutral-800 hx-border dark:hx-border-neutral-700 hx-rounded-lg hx-flex hx-items-center hx-justify-center hx-text-gray-500 dark:hx-text-gray-400" style="min-height: 300px; aspect-ratio: 4/3;">
-                  <span>Không có ảnh đại diện</span>
+                  <span>Ảnh không tìm thấy ({{ $imagePath }})</span>
                 </div>
               {{ end }}
             {{ else }}
@@ -43,6 +44,7 @@
                 <span>Không có ảnh đại diện</span>
               </div>
             {{ end }}
+            {{/* END MODIFIED */}}
           </div>
 
           {{/* Cột phải: Meta box và Buttons */}}

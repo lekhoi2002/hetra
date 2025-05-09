@@ -20,23 +20,20 @@
             {{- $title := partial "utils/title" $page -}}
             {{- $permalink := $page.RelPermalink -}}
 
-            {{/* Lấy đường dẫn ảnh từ trường 'image' duy nhất */}}
+            {{/* MODIFIED: Logic lấy và xử lý ảnh */}}
             {{- $imagePath := $page.Params.image -}}
-
-            {{/* Lấy và xử lý ảnh thành thumbnail */}}
             {{- $imageRes := "" -}}
             {{- $thumb := "" -}}
             {{- if $imagePath -}}
               {{- $imageRes = resources.Get $imagePath -}}
               {{- if $imageRes -}}
-                {{/* --- Quy tắc xử lý THUMBNAIL --- */}}
-                {{- $thumb = $imageRes.Fill "400x300 webp q70" -}} {{/* Ví dụ: Crop và resize thành 400x300 */}}
+                {{- $thumb = $imageRes.Fill "400x300 webp q95" -}}
               {{- else -}}
-                {{- warnf "Thumbnail Image asset not found for page %q: %s" $page.Path $imagePath -}}
+                {{- warnf "List Page: Thumbnail Image asset not found for page %q: %s" $page.Path $imagePath -}}
               {{- end -}}
             {{- end -}}
+            {{/* END MODIFIED */}}
 
-            {{/* Xác định lớp CSS cho card */}}
             {{- $linkClass := "hover:hx-border-gray-300 hx-bg-transparent hx-shadow-sm dark:hx-border-neutral-800 hover:hx-bg-slate-50 hover:hx-shadow-md dark:hover:hx-border-neutral-700 dark:hover:hx-bg-neutral-900" -}}
             {{- if $thumb -}}
               {{- $linkClass = "hover:hx-border-gray-300 hx-bg-gray-100 hx-shadow dark:hx-border-neutral-700 dark:hx-bg-neutral-800 dark:hx-text-gray-50 hover:hx-shadow-lg dark:hover:hx-border-neutral-500 dark:hover:hx-bg-neutral-700" -}}
